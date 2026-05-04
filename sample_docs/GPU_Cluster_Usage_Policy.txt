@@ -1,0 +1,19 @@
+Internal GPU Cluster - Usage Policy
+
+Cluster: 4x A100 80GB, NVLink, located in Gurugram DC.
+Scheduler: Slurm. Container runtime: Singularity/Apptainer.
+
+Quota:
+- Production teams: priority queue, no time limit
+- Research/POC: standard queue, 24h max per job
+- Interns: research queue, 8h max per job, mentor approval to extend
+
+Booking: gpu-booking.vvdntech.in
+Container registry: harbor.vvdntech.in
+
+Etiquette:
+- No idle reservations. Jobs canceled after 30 min of GPU utilization < 5%.
+- Save checkpoints to NFS at /shared/checkpoints/<your-team>/
+- Public datasets at /shared/datasets/. Don't re-download common ones (ImageNet, MS-MARCO, MTEB).
+
+Contact: ml-platform@vvdntech.in or #ml-platform Slack.

@@ -1,0 +1,25 @@
+AI Team Weekly Standup - April 28, 2026
+
+Sandeep:
+- Project Atlas RIC component design review with Reliance Jio postponed to May 6.
+- Reviewing intern POCs for KMS and Recruitment Bot before mid-term reviews.
+
+Anitha (remote, Hyderabad):
+- Project Volt B-sample firmware feature-complete; integration testing started.
+- Risk: STM32H7 supply lead time stretched to 22 weeks.
+
+Karan:
+- BGE-reranker integrated into RAG infrastructure; precision@3 up from 0.71 to 0.84 on internal eval set.
+- Aarav's eval harness ready; needs more labeled queries.
+
+Priya:
+- Vision model for diagram understanding now matches LLaVA-7B on internal benchmark.
+- Looking at LLaVA-NeXT-13B for next iteration.
+
+Rishit (intern):
+- KMS POC backend complete: single /chat endpoint, multimodal ingestion (PDF/image/video), MCP server, swappable LLM. Whisper transcription tested. Demo prep in progress.
+- Blocker: 8GB MacBook Air RAM limit when running LLaVA + Whisper + chat model concurrently. Mitigation: Ollama keep-alive set to 30s, swap to llama3.2:1b for chat.
+
+Action items:
+- Sandeep to do KMS demo dry-run with Rishit before formal review.
+- Karan to send Aarav 50 more labeled queries by May 1.

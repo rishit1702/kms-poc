@@ -1,0 +1,27 @@
+KMS POC - Architecture Notes
+
+Data flow:
+1. Upload (PDF/image/video/text) -> /ingest endpoint
+2. Type-aware extraction:
+   - PDF: PyPDF text extraction
+   - Image: LLaVA vision-to-text caption
+   - Video: Whisper audio transcription
+3. Chunking: 500-word chunks with 50-word overlap
+4. Embedding: sentence-transformers all-MiniLM-L6-v2 (384d)
+5. Storage: ChromaDB persistent client at ./data/chroma
+
+Query flow:
+1. User question -> /chat endpoint
+2. Vector search top-k chunks (default k=5)
+3. Distance-based relevance filter (drop d>=1.5)
+4. Build structured context block with [Source N | type | file | relevance] headers
+5. Inject into context-engineered system prompt
+6. LLM call (Ollama/Claude/Gemini/OpenRouter)
+7. Return answer + sources cited
+
+MCP server (app/mcp/server.py) exposes 3 tools to MCP-aware clients:
+- search_knowledge_base
+- ingest_document
+- kb_stats
+
+Single endpoint design: All modalities reduce to text chunks, retrievable through one vector index, served from a single /chat route.

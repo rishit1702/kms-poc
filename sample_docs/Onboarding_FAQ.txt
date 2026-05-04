@@ -1,0 +1,22 @@
+VVDN New Joiner Onboarding FAQ
+
+Q: Office address?
+A: VVDN Technologies Pvt. Ltd., Plot No. 42, Sector 18, Gurugram, Haryana 122015.
+
+Q: Working hours?
+A: 9:30 AM to 6:30 PM, Mon-Fri. Hybrid: 3 days office, 2 days remote.
+
+Q: Laptop?
+A: Dell Precision 5570 or MacBook Pro M3 within 2 working days. Property of VVDN, returned on exit.
+
+Q: Internal portal?
+A: portal.vvdntech.in via SSO. First-time login requires VPN.
+
+Q: Cafeteria?
+A: Breakfast 8:30-10:30, Lunch 12:30-2:30, Snacks 4:30-5:30. Subsidized at Rs 50/meal.
+
+Q: Leave policy?
+A: 18 annual + 12 casual + 7 sick. Maternity 26 weeks, Paternity 15 days.
+
+Q: Relocation?
+A: One-time Rs 50,000 for joiners from outside NCR, manager approval required.

@@ -1,0 +1,19 @@
+Project Atlas - Technical Specification v1.2
+
+Overview:
+5G Open RAN platform built on O-RAN Alliance specifications. Targets Tier-2 telcos in India and SE Asia.
+
+Architecture:
+- DU (Distributed Unit): C++ on Intel FlexRAN
+- CU (Central Unit): Go microservices on Kubernetes
+- RIC (RAN Intelligent Controller): Python ML pipelines using ONNX
+- SMO (Service Management & Orchestration): based on ONAP
+
+Key Tech Choices:
+- gRPC for E2/A1/O1 interfaces
+- TimescaleDB for telemetry
+- Prometheus + Grafana for observability
+- Argo Workflows for ML retraining
+
+Lead: Sandeep Mishra. Team size: 14 engineers across Gurugram and Bangalore.
+First customer trial: October 2026 with Reliance Jio test lab.

@@ -1,0 +1,20 @@
+AI Project Review Process
+
+Stage gates:
+1. Concept (1-page brief, owner: PM or EM)
+2. POC (working demo on internal data, owner: tech lead)
+3. Pilot (running with 1-2 customers or internal teams, success metrics defined)
+4. Production (SLOs, runbooks, on-call rotation)
+
+POC review checklist:
+- Does it address a real, validated problem?
+- Is the data realistic enough to predict pilot performance?
+- Are failure modes understood?
+- What's the cost-per-query at projected scale?
+
+Reviewers:
+- POC: EM + 1 senior engineer
+- Pilot: EM + Director + Customer success rep
+- Production: VP Engineering + Security + SRE
+
+Cadence: Reviews scheduled bi-weekly on Thursdays. Calendar: ai-reviews@vvdntech.in.

@@ -1,0 +1,15 @@
+VVDN Frontend Engineering Standards
+
+Default stack: React 18 + TypeScript + Vite + Tailwind CSS.
+State: Zustand for client state, TanStack Query for server state.
+Forms: react-hook-form + zod for validation.
+Testing: Vitest (unit), Playwright (e2e).
+
+Component library: Internal "VVDN-UI" based on Radix primitives.
+
+Build outputs:
+- Web: ESM bundles, deployed to Cloudflare Pages
+- Mobile: React Native 0.74 + Expo SDK 51
+
+Accessibility: WCAG 2.1 AA minimum. axe-core in CI.
+i18n: i18next, supported locales en-IN (default), hi-IN, ja-JP, de-DE.

@@ -1,0 +1,9 @@
+VVDN Code of Conduct (Summary)
+
+1. Confidentiality: All client information, source code, and internal documents are confidential.
+2. IP: Anything created during employment using company resources belongs to VVDN.
+3. Anti-harassment: Zero tolerance. Report to HR or POSH committee.
+4. Conflict of interest: Disclose external engagements (consulting, equity, board roles).
+5. Use of AI tools: GitHub Copilot, Cursor, Claude permitted. ChatGPT free tier prohibited for code involving customer IP.
+6. External communication: Marketing/PR statements require approval from Communications team.
+7. Open-source contributions: Personal contributions allowed. VVDN-IP contributions require VP approval.

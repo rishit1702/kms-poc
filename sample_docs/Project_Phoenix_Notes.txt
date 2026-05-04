@@ -1,0 +1,7 @@
+Project Phoenix - Internal AI Initiative
+
+Status: Kickoff scheduled for May 2026.
+Budget: 50 lakh INR (FY2026).
+Goal: AI-driven document intelligence layer for VVDN's internal knowledge platforms.
+Sponsor: CTO office.
+First deliverable: integration with KMS POC by July 2026.

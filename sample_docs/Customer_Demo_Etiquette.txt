@@ -1,0 +1,15 @@
+Customer Demo Etiquette - Field Engineering
+
+Pre-demo:
+- Dry run end-to-end at least 24h before. Include network failure scenarios.
+- Pre-load demo data and warm up models. First-call latency should not be the customer's experience.
+- Have a fallback: pre-recorded video, screenshots, backup slide deck.
+
+During demo:
+- Lead with outcomes ("here's the answer the system returns") before drilling into architecture.
+- When showing failure modes, frame as design choices ("system refuses when context is insufficient, by design - prevents hallucination").
+- If something breaks: don't panic, narrate ("interesting, let me show you what's happening here"). Then fall back.
+
+After demo:
+- Send summary email within 4 hours, including recording link, slides, and proposed next steps.
+- Capture customer questions and unknowns - log them in HubSpot.

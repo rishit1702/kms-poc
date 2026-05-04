@@ -1,0 +1,27 @@
+KMS POC - Project Charter
+
+Goal: Build a multimodal Knowledge Management System for VVDN employees that lets them search across internal documents, meeting recordings, and design diagrams using natural language.
+
+Owner: AI Engineering team (Sandeep Mishra).
+Implementer: Rishit Gambhir (Intern, B.Tech CSE, PEC).
+
+Scope (POC):
+- Single chat inference endpoint for all multimedia (text, PDF, images, video)
+- Multimodal ingestion pipeline
+- Context-engineered RAG with source attribution
+- MCP server exposing KB as tools
+- Swappable LLM layer (Ollama / Anthropic / Gemini / OpenRouter)
+- Demo-ready by end April 2026
+
+Out of scope (POC):
+- Production-scale auth and RBAC
+- Persistent multi-tenant data isolation
+- Frontend beyond a simple Swagger UI / minimal chat page
+
+Tech Stack:
+- FastAPI backend
+- ChromaDB vector store
+- sentence-transformers for embeddings
+- Whisper for audio/video transcription
+- LLaVA / vision LLMs for image captioning
+- Ollama for local inference

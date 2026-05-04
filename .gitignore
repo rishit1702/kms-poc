@@ -1,0 +1,30 @@
+# Environment / secrets
+.env
+.env.local
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+*.egg-info/
+
+# Data and uploads (these are runtime data, not code)
+data/
+uploads/
+*.log
+
+# Whisper / model caches
+~/.cache/whisper/
+*.bin
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

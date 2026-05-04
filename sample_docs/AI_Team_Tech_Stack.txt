@@ -1,0 +1,28 @@
+VVDN AI Engineering Team - Technology Stack Reference
+
+Core Languages: Python 3.11+, TypeScript, Go (high-throughput services).
+
+ML/AI Frameworks:
+- PyTorch 2.x for deep learning
+- HuggingFace Transformers for NLP/LLM
+- LangChain and LlamaIndex for RAG
+- Sentence-Transformers for embeddings
+
+LLM Providers (production):
+- Anthropic Claude (primary, high-quality generation)
+- Ollama (on-prem for sensitive customer data)
+- OpenRouter (model experimentation)
+
+Vector DBs:
+- ChromaDB (POC and small-scale)
+- Pinecone (production at scale)
+- Qdrant (hybrid search)
+
+Infrastructure:
+- AWS (ECS, S3, Bedrock)
+- Internal GPU cluster: 4x A100 80GB
+- Kubernetes for orchestration
+- MLflow for experiment tracking
+
+Coding standards: Black + isort, mypy in CI, 80% test coverage minimum.
+Approved AI tools: GitHub Copilot, Cursor, Claude Code.

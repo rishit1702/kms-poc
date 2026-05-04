@@ -1,0 +1,20 @@
+AI Recruitment Bot - Internal Tool
+
+Purpose: Automate first-pass candidate shortlisting for the Talent Acquisition (TA) team.
+
+Architecture:
+- Agent framework: OpenClaw (full ReAct loop, persistent memory, skill plugins)
+- LLM: openai/gpt-oss-120b via OpenRouter (after local Ollama hit 8GB RAM ceiling, then Groq hit rate limits)
+- Channel: Telegram bot (@VVDN_Recruiter_Bot)
+- Data source: LinkedIn via Selenium with throwaway account (manager-approved, ban risk accepted)
+- Skills: linkedin_search, rank_candidates, parse_jd
+
+Implementer: Rishit Gambhir under mentor Sandeep Mishra.
+Status: Telegram integration live; rank_candidates skill in progress.
+
+Workflow:
+1. Hiring manager sends JD to bot in plain language
+2. Bot extracts requirements (role, location, experience, must-have skills)
+3. Bot queries LinkedIn via skill
+4. Bot ranks candidates using LLM scoring rubric
+5. Bot returns top-10 shortlist with reasoning

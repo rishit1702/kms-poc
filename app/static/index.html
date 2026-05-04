@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VVDN KMS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0f1115;
+    color: #e8e8e8;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #2a2d36;
+    background: #161922;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 { font-size: 18px; font-weight: 600; }
+  header .badge {
+    font-size: 12px;
+    background: #2a4f3a;
+    color: #7ee2a8;
+    padding: 4px 10px;
+    border-radius: 12px;
+  }
+  #chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  .msg { margin-bottom: 20px; }
+  .msg .role {
+    font-size: 12px;
+    color: #8a8d96;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .msg .content {
+    background: #1c1f29;
+    padding: 14px 16px;
+    border-radius: 10px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+  }
+  .msg.user .content { background: #2c3142; }
+  .msg.assistant .content { border-left: 3px solid #5b8def; }
+  .sources {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #8a8d96;
+  }
+  .sources span {
+    display: inline-block;
+    background: #232633;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-right: 6px;
+    margin-top: 4px;
+  }
+  .typing { color: #8a8d96; font-style: italic; }
+  form {
+    padding: 16px 24px;
+    border-top: 1px solid #2a2d36;
+    background: #161922;
+    display: flex;
+    gap: 10px;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+  }
+  #file-label {
+    background: #232633;
+    color: #8a8d96;
+    padding: 12px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+  }
+  #file-label:hover { background: #2c3142; color: #e8e8e8; }
+  #file-label.has-file { color: #7ee2a8; }
+  #file-input { display: none; }
+  input[type="text"] {
+    flex: 1;
+    background: #232633;
+    border: 1px solid #2a2d36;
+    border-radius: 8px;
+    color: #e8e8e8;
+    padding: 12px 14px;
+    font-size: 15px;
+    outline: none;
+  }
+  input[type="text"]:focus { border-color: #5b8def; }
+  button {
+    background: #5b8def;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  button:disabled { background: #3a4054; cursor: not-allowed; }
+  .empty {
+    text-align: center;
+    color: #8a8d96;
+    margin-top: 80px;
+  }
+  .empty h2 { color: #e8e8e8; margin-bottom: 8px; }
+  .suggestions { margin-top: 24px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
+  .suggestion {
+    background: #1c1f29;
+    border: 1px solid #2a2d36;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #c0c4cc;
+    max-width: 600px;
+  }
+  .suggestion:hover { border-color: #5b8def; color: #e8e8e8; }
+</style>
+</head>
+<body>
+<header>
+  <h1>VVDN Knowledge Management System</h1>
+  <span class="badge" id="provider-badge">connecting...</span>
+</header>
+
+<div id="chat">
+  <div class="empty" id="empty-state">
+    <h2>Ask me about VVDN</h2>
+    <p>Internal documentation, projects, policies, and more.</p>
+    <div class="suggestions">
+      <div class="suggestion" onclick="askSuggestion(this)">What is Project Atlas, when was it approved, and who is leading it?</div>
+      <div class="suggestion" onclick="askSuggestion(this)">What are the working hours and leave policy at VVDN?</div>
+      <div class="suggestion" onclick="askSuggestion(this)">Which LLM providers does the AI team use in production?</div>
+    </div>
+  </div>
+</div>
+
+<form id="form">
+  <label id="file-label" for="file-input">📎 Attach</label>
+  <input type="file" id="file-input">
+  <input type="text" id="input" placeholder="Ask a question..." autocomplete="off" required>
+  <button type="submit" id="send">Send</button>
+</form>
+
+<script>
+const chat = document.getElementById('chat');
+const form = document.getElementById('form');
+const input = document.getElementById('input');
+const send = document.getElementById('send');
+const fileInput = document.getElementById('file-input');
+const fileLabel = document.getElementById('file-label');
+const emptyState = document.getElementById('empty-state');
+const providerBadge = document.getElementById('provider-badge');
+
+fetch('/health').then(r => r.json()).then(d => {
+  providerBadge.textContent = `${d.status} · ${d.llm_provider}`;
+}).catch(() => providerBadge.textContent = 'offline');
+
+fileInput.addEventListener('change', () => {
+  if (fileInput.files.length > 0) {
+    fileLabel.textContent = `📎 ${fileInput.files[0].name}`;
+    fileLabel.classList.add('has-file');
+  } else {
+    fileLabel.textContent = '📎 Attach';
+    fileLabel.classList.remove('has-file');
+  }
+});
+
+function addMsg(role, content, sources) {
+  if (emptyState) emptyState.remove();
+  const div = document.createElement('div');
+  div.className = `msg ${role}`;
+  let html = `<div class="role">${role === 'user' ? 'You' : 'KMS Assistant'}</div>`;
+  html += `<div class="content">${escapeHtml(content)}</div>`;
+  if (sources && sources.length > 0) {
+    const unique = [...new Set(sources.map(s => s.source))];
+    html += `<div class="sources">Sources: ${unique.map(s => `<span>${escapeHtml(s)}</span>`).join('')}</div>`;
+  }
+  div.innerHTML = html;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+
+function askSuggestion(el) {
+  input.value = el.textContent;
+  form.requestSubmit();
+}
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const query = input.value.trim();
+  if (!query) return;
+
+  addMsg('user', query);
+  input.value = '';
+  send.disabled = true;
+
+  const typing = addMsg('assistant', '...thinking', null);
+  typing.querySelector('.content').classList.add('typing');
+
+  const fd = new FormData();
+  fd.append('query', query);
+  fd.append('top_k', '5');
+  if (fileInput.files.length > 0) {
+    fd.append('file', fileInput.files[0]);
+  }
+
+  try {
+    const res = await fetch('/chat', { method: 'POST', body: fd });
+    const data = await res.json();
+    typing.remove();
+    if (data.detail) {
+      addMsg('assistant', 'Error: ' + JSON.stringify(data.detail), null);
+    } else {
+      addMsg('assistant', data.answer, data.sources);
+    }
+  } catch (err) {
+    typing.remove();
+    addMsg('assistant', 'Network error: ' + err.message, null);
+  }
+
+  fileInput.value = '';
+  fileLabel.textContent = '📎 Attach';
+  fileLabel.classList.remove('has-file');
+  send.disabled = false;
+  input.focus();
+});
+
+input.focus();
+</script>
+</body>
+</html>

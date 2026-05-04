@@ -1,0 +1,15 @@
+AI Engineering Team Roster - Q2 2026 (Gurugram)
+
+Sandeep Mishra - Engineering Manager, AI (mentor for KMS POC and Recruitment Bot interns)
+Anitha Reddy - Senior Staff Engineer, leads Project Volt
+Rohit Pandey - Staff Engineer, ML platform
+Karan Vohra - Senior Engineer, RAG infrastructure
+Priya Sharma - Senior Engineer, vision models
+Devansh Iyer - Engineer II, agent frameworks
+Meera Krishnan - Engineer II, observability and MLOps
+Rishit Gambhir - Intern, KMS + Recruitment Bot (mentor: Sandeep)
+Aarav Nigam - Intern, retrieval evals (mentor: Karan)
+Ananya Bose - Intern, multilingual LLM eval (mentor: Priya)
+
+Total: 10 (7 FT + 3 interns).
+Open headcount: 1 Senior Engineer (Vision), 1 Engineer II (RAG).

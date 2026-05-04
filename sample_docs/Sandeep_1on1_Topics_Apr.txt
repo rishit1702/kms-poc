@@ -1,0 +1,19 @@
+Sandeep 1:1 Recurring Topics - April 2026
+
+With Rishit (KMS intern):
+- KMS POC progress and demo readiness
+- Stretch goal: extend KMS to support multi-conversation memory
+- Next quarter: explore reranker integration for KMS RAG
+
+With Aarav:
+- Eval harness coverage on long-context queries
+- Cross-encoder reranker latency benchmarks
+
+With Karan:
+- Hiring loop for senior vision engineer
+- Hybrid retrieval rollout to staging
+
+Personal goals (FY2026):
+- Get 2 of 3 interns to PPO
+- Ship Project Atlas RIC component to first customer trial
+- Internal blog post on "RAG patterns we use at VVDN"

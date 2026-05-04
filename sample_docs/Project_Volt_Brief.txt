@@ -1,0 +1,17 @@
+Project Volt - EV Battery Management System
+
+Customer: Confidential Tier-1 automotive OEM (referred to internally as "OEM-A").
+Engagement: 18-month design + manufacturing partnership signed Feb 2026.
+
+Scope:
+- BMS firmware on STM32H7 MCUs
+- Cell balancing algorithms (passive + active hybrid)
+- CAN-FD communication with vehicle ECU
+- Over-the-air update infrastructure
+- Functional safety: ISO 26262 ASIL-C
+
+Lead site: Hyderabad. Project director: Anitha Reddy.
+Estimated revenue: 8.5 crore INR over engagement period.
+
+Hardware: 96-cell pack, 400V system, NMC chemistry.
+First B-sample delivery: August 2026.

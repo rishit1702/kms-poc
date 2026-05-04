@@ -1,0 +1,26 @@
+KMS - Context Engineering Design Choices
+
+1. Role-scoped system prompt:
+   Identity, scope (internal docs only), refusal protocol, citation format, output style.
+
+2. Few-shot citation example:
+   Worked example inside the system prompt showing the expected (Source: filename) format.
+
+3. Structured retrieval blocks:
+   Each retrieved chunk wrapped with [Source N | type | file | relevance] header so the LLM can cite correctly and weight sources.
+
+4. Distance-based pre-filter:
+   ChromaDB L2 distance mapped to high/medium/low relevance, chunks with d>=1.5 dropped before reaching the LLM.
+
+5. Explicit refusal path:
+   When no chunks pass the filter, the LLM defaults to a fixed phrase rather than hallucinating.
+
+Chunking strategy:
+- Word-based (not char-based) - preserves token boundaries
+- 500 words per chunk - balanced for sentence-transformer embeddings
+- 50-word overlap - prevents concept loss across boundaries
+
+Why these choices:
+- Cite-by-default reduces hallucination
+- Relevance filter prevents context pollution
+- Single retrieval pipeline across modalities makes the multimodal contract clean

@@ -1,0 +1,21 @@
+VVDN Security Guidelines (v3.1)
+
+Secrets:
+- Never commit secrets to git. Use AWS Secrets Manager or HashiCorp Vault.
+- Rotate API keys every 90 days.
+- Customer credentials: encrypted at rest with AWS KMS, customer-managed keys where required.
+
+Code review:
+- All PRs require 2 approvals, one must be a CODEOWNER.
+- Security-sensitive changes (auth, crypto, data export) require Security team approval.
+
+Dependencies:
+- Snyk scan on every PR
+- Critical CVEs blocked from merge
+- Quarterly SBOM review
+
+Data classification:
+- Public, Internal, Confidential, Restricted
+- Restricted data must remain on customer-isolated infrastructure
+
+Reporting incidents: security@vvdntech.in or #security-incidents Slack.

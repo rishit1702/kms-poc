@@ -1,0 +1,23 @@
+VVDN Internship Program - Policy & Guidelines
+
+Eligibility:
+- Penultimate or final-year B.Tech/M.Tech students from approved colleges (PEC, IIT, NIT, IIIT, BITS, etc.)
+- Minimum CGPA of 7.0
+
+Duration: 6 months (extendable to 9 with mentor approval).
+Stipend: Rs 25,000/month for B.Tech, Rs 35,000/month for M.Tech.
+
+Mentor assignment: Each intern is assigned a primary mentor (typically Senior Engineer or above).
+Weekly 1:1 with mentor is mandatory.
+
+Deliverables:
+- Mid-term review at month 3
+- Final project demo + code review at month 6
+- One technical blog post on internal Confluence
+
+PPO (Pre-Placement Offer) criteria:
+- Mid-term and final review ratings >= "Meets Expectations"
+- Mentor recommendation
+- Open headcount in the team
+
+Code of conduct: NDA in effect from day 1. No public disclosure of project details.

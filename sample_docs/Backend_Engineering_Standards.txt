@@ -1,0 +1,24 @@
+VVDN Backend Engineering Standards
+
+Languages: Python 3.11+ (FastAPI/Django), Go 1.22+ (gRPC services), Java 17 (legacy + Android).
+
+API design:
+- REST over HTTP/2 by default
+- gRPC for internal service-to-service
+- OpenAPI 3.1 spec mandatory for all public APIs
+- Versioning: URL-path based (/v1/, /v2/)
+
+Authentication: OAuth2 + JWT, refresh tokens rotated on use.
+
+Database choices:
+- PostgreSQL 15+ for transactional
+- ClickHouse for analytics
+- Redis 7 for caching and rate-limiting
+- S3 for blob storage
+
+Observability:
+- Structured JSON logs to Loki
+- Prometheus metrics, Grafana dashboards
+- OpenTelemetry traces to Tempo
+
+Deployment: Docker images, Kubernetes via Argo CD. Blue-green for prod.
