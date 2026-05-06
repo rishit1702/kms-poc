@@ -21,10 +21,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
   }
   header h1 { font-size: 18px; font-weight: 600; }
-  header .right { display: flex; align-items: center; gap: 10px; }
   header .badge {
     font-size: 12px;
     background: #2a4f3a;
@@ -32,16 +30,6 @@
     padding: 4px 10px;
     border-radius: 12px;
   }
-  header .reset-btn {
-    background: #232633;
-    color: #c0c4cc;
-    border: 1px solid #2a2d36;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  header .reset-btn:hover { background: #2c3142; color: #e8e8e8; }
   #chat {
     flex: 1;
     overflow-y: auto;
@@ -79,12 +67,6 @@
     border-radius: 6px;
     margin-right: 6px;
     margin-top: 4px;
-  }
-  .rewrite-trace {
-    margin-top: 6px;
-    font-size: 11px;
-    color: #6a6e78;
-    font-style: italic;
   }
   .typing { color: #8a8d96; font-style: italic; }
   form {
@@ -154,10 +136,7 @@
 <body>
 <header>
   <h1>VVDN Knowledge Management System</h1>
-  <div class="right">
-    <span class="badge" id="provider-badge">connecting...</span>
-    <button type="button" class="reset-btn" id="reset-btn" title="Clear conversation history">New chat</button>
-  </div>
+  <span class="badge" id="provider-badge">connecting...</span>
 </header>
 
 <div id="chat">
@@ -188,14 +167,6 @@ const fileInput = document.getElementById('file-input');
 const fileLabel = document.getElementById('file-label');
 const emptyState = document.getElementById('empty-state');
 const providerBadge = document.getElementById('provider-badge');
-const resetBtn = document.getElementById('reset-btn');
-
-// === Conversation memory ===
-// This array is the ONLY place chat history lives on the client.
-// Each entry: {"role": "user"|"assistant", "content": "..."}.
-// We send the full array to the backend on every /chat call.
-// REST stays stateless: the server forgets between requests, the client carries the history.
-let conversationHistory = [];
 
 fetch('/health').then(r => r.json()).then(d => {
   providerBadge.textContent = `${d.status} · ${d.llm_provider}`;
@@ -211,26 +182,8 @@ fileInput.addEventListener('change', () => {
   }
 });
 
-resetBtn.addEventListener('click', () => {
-  conversationHistory = [];
-  // Clear the chat panel and bring back the empty state
-  chat.innerHTML = `
-    <div class="empty" id="empty-state">
-      <h2>Ask me about VVDN</h2>
-      <p>Internal documentation, projects, policies, and more.</p>
-      <div class="suggestions">
-        <div class="suggestion" onclick="askSuggestion(this)">What is Project Atlas, when was it approved, and who is leading it?</div>
-        <div class="suggestion" onclick="askSuggestion(this)">What are the working hours and leave policy at VVDN?</div>
-        <div class="suggestion" onclick="askSuggestion(this)">Which LLM providers does the AI team use in production?</div>
-      </div>
-    </div>
-  `;
-  input.focus();
-});
-
-function addMsg(role, content, sources, rewriteTrace) {
-  const empty = document.getElementById('empty-state');
-  if (empty) empty.remove();
+function addMsg(role, content, sources) {
+  if (emptyState) emptyState.remove();
   const div = document.createElement('div');
   div.className = `msg ${role}`;
   let html = `<div class="role">${role === 'user' ? 'You' : 'KMS Assistant'}</div>`;
@@ -238,9 +191,6 @@ function addMsg(role, content, sources, rewriteTrace) {
   if (sources && sources.length > 0) {
     const unique = [...new Set(sources.map(s => s.source))];
     html += `<div class="sources">Sources: ${unique.map(s => `<span>${escapeHtml(s)}</span>`).join('')}</div>`;
-  }
-  if (rewriteTrace) {
-    html += `<div class="rewrite-trace">Rewritten for retrieval: ${escapeHtml(rewriteTrace)}</div>`;
   }
   div.innerHTML = html;
   chat.appendChild(div);
@@ -269,14 +219,9 @@ form.addEventListener('submit', async (e) => {
   const typing = addMsg('assistant', '...thinking', null);
   typing.querySelector('.content').classList.add('typing');
 
-  // Snapshot the history that will be sent. The current query is NOT added to history yet —
-  // it goes in the `query` field. We add user+assistant pair to history AFTER we get a response.
-  const historyToSend = JSON.stringify(conversationHistory);
-
   const fd = new FormData();
   fd.append('query', query);
   fd.append('top_k', '5');
-  fd.append('history', historyToSend);
   if (fileInput.files.length > 0) {
     fd.append('file', fileInput.files[0]);
   }
@@ -288,16 +233,7 @@ form.addEventListener('submit', async (e) => {
     if (data.detail) {
       addMsg('assistant', 'Error: ' + JSON.stringify(data.detail), null);
     } else {
-      // Show the rewrite trace only when it's actually different from the user's query
-      // (i.e. when the system actually rewrote a follow-up).
-      const trace = (data.standalone_query && data.standalone_query.trim() !== query.trim())
-        ? data.standalone_query
-        : null;
-      addMsg('assistant', data.answer, data.sources, trace);
-
-      // Append both turns to history AFTER successful response.
-      conversationHistory.push({ role: 'user', content: query });
-      conversationHistory.push({ role: 'assistant', content: data.answer });
+      addMsg('assistant', data.answer, data.sources);
     }
   } catch (err) {
     typing.remove();
