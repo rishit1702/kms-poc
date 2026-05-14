@@ -2,15 +2,16 @@
 Multimodal ingestion pipeline.
 Handles PDF, images, video, and text. Each becomes searchable text in the KB.
 
-Image handling has two modes (controlled by ENABLE_IMAGE_VISION in .env):
-- True  -> Ollama LLaVA generates a detailed caption (high RAM, can hang on 8GB)
-- False -> Metadata-only ingestion, safe on low-RAM machines (default)
+Image handling modes (controlled by .env):
+- ENABLE_IMAGE_VISION=false -> Metadata-only ingestion, safe on low-RAM machines (default)
+- ENABLE_IMAGE_VISION=true + IMAGE_VISION_PROVIDER=gemini    -> Gemini Vision API
+- ENABLE_IMAGE_VISION=true + IMAGE_VISION_PROVIDER=anthropic -> Claude Vision API
+- ENABLE_IMAGE_VISION=true + IMAGE_VISION_PROVIDER=ollama    -> Local LLaVA via Ollama
 """
 from pathlib import Path
 from typing import List
 from pypdf import PdfReader
 import base64
-import os
 import httpx
 
 from app.services.knowledge_base import kb
@@ -47,21 +48,23 @@ def ingest_text(text: str, source_name: str) -> int:
 
 
 # ---------- Image (vision optional) ----------
-VISION_MODEL = "llava:7b"
-ENABLE_VISION = os.getenv("ENABLE_IMAGE_VISION", "false").lower() == "true"
+ENABLE_VISION = settings.ENABLE_IMAGE_VISION
+VISION_PROVIDER = settings.IMAGE_VISION_PROVIDER
 
 
 def ingest_image(file_path: str, source_name: str) -> int:
     if ENABLE_VISION:
-        description = _describe_image_ollama(file_path)
+        if VISION_PROVIDER == "gemini":
+            description = _describe_image_gemini(file_path)
+        elif VISION_PROVIDER == "anthropic":
+            description = _describe_image_anthropic(file_path)
+        else:
+            description = _describe_image_ollama(file_path)
     else:
         description = (
             f"Image file uploaded: {source_name}. "
-            f"This image is stored in the knowledge base. "
-            f"Vision-based content extraction is currently disabled "
-            f"on this deployment to conserve memory. "
-            f"To enable detailed image content search, set "
-            f"ENABLE_IMAGE_VISION=true in the environment configuration."
+            f"Vision-based content extraction is currently disabled. "
+            f"To enable, set ENABLE_IMAGE_VISION=true in .env."
         )
     chunks = chunk_text(description)
     return kb.add_chunks(
@@ -70,7 +73,69 @@ def ingest_image(file_path: str, source_name: str) -> int:
     )
 
 
+def _describe_image_gemini(file_path: str) -> str:
+    """Describe image using Gemini Vision API. Needs GEMINI_API_KEY in .env."""
+    import google.generativeai as genai
+    from PIL import Image
+    genai.configure(api_key=settings.GEMINI_API_KEY)
+    model = genai.GenerativeModel(settings.GEMINI_MODEL)
+    img = Image.open(file_path)
+    prompt = (
+        "Describe this image in detail. Include all visible text, "
+        "objects, diagrams, charts, and technical content. This will be "
+        "stored in a searchable knowledge base, so be thorough and specific."
+    )
+    response = model.generate_content([prompt, img])
+    return response.text
+
+
+def _describe_image_anthropic(file_path: str) -> str:
+    """Describe image using Claude Vision API. Needs ANTHROPIC_API_KEY in .env."""
+    import anthropic
+    with open(file_path, "rb") as f:
+        img_b64 = base64.b64encode(f.read()).decode("utf-8")
+    ext = Path(file_path).suffix.lower()
+    media_type_map = {
+        ".jpg": "image/jpeg",
+        ".jpeg": "image/jpeg",
+        ".png": "image/png",
+        ".webp": "image/webp",
+        ".gif": "image/gif",
+    }
+    media_type = media_type_map.get(ext, "image/jpeg")
+    client = anthropic.Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+    message = client.messages.create(
+        model=settings.ANTHROPIC_MODEL,
+        max_tokens=1024,
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "image",
+                        "source": {
+                            "type": "base64",
+                            "media_type": media_type,
+                            "data": img_b64,
+                        },
+                    },
+                    {
+                        "type": "text",
+                        "text": (
+                            "Describe this image in detail. Include all visible text, "
+                            "objects, diagrams, charts, and technical content. This will be "
+                            "stored in a searchable knowledge base, so be thorough and specific."
+                        ),
+                    },
+                ],
+            }
+        ],
+    )
+    return message.content[0].text
+
+
 def _describe_image_ollama(file_path: str) -> str:
+    """Describe image using LLaVA via Ollama. High RAM usage — only for servers with 16GB+."""
     with open(file_path, "rb") as f:
         img_b64 = base64.b64encode(f.read()).decode("utf-8")
     prompt = (
@@ -82,7 +147,7 @@ def _describe_image_ollama(file_path: str) -> str:
         r = client.post(
             f"{settings.OLLAMA_BASE_URL}/api/generate",
             json={
-                "model": VISION_MODEL,
+                "model": "llava:7b",
                 "prompt": prompt,
                 "images": [img_b64],
                 "stream": False,

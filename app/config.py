@@ -19,9 +19,11 @@ class Settings(BaseSettings):
     CHROMA_PATH: str = "./data/chroma"
     UPLOAD_PATH: str = "./uploads"
 
+    ENABLE_IMAGE_VISION: bool = False
+    IMAGE_VISION_PROVIDER: str = "gemini"
+
     class Config:
         env_file = ".env"
-        extra = "ignore"
 
 
 settings = Settings()
